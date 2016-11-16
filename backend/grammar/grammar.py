@@ -1,4 +1,4 @@
-from typing import Iterable, Dict
+from typing import Iterable, Dict, Callable
 
 from grammar.symbols import Nonterminal, Symbol, Terminal, SymbolList
 
@@ -7,10 +7,6 @@ class Rule:
     def __init__(self, lhs: Nonterminal, rhs: Iterable[Symbol]):
         self.lhs = lhs
         self.rhs = list(rhs)
-        self.start = None
-    
-    def set_start(self, start: Nonterminal) -> None:
-        self.start = start
     
     def lhs(self) -> Nonterminal:
         return self.lhs
@@ -29,9 +25,13 @@ class Grammar:
     def __init__(self, rules: Dict[Nonterminal, Rule] = None):
         self.rules = dict()
         self.symbol_list = SymbolList()
+        self.start = None
         if rules:
             for key in rules:
                 self.rules[key] = rules[key]
+    
+    def set_start(self, start: Nonterminal) -> None:
+        self.start = start
     
     def make_nonterminal(self) -> Nonterminal:
         return self.symbol_list.make_nonterminal()
