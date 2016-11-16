@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" ng-app>
+<head>
+  <meta charset="UTF-8">
+  <title>Calculator</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+</head>
+<body>
+<div>
+  <p>
+    <h3>It's just as good as wolfram|alpha, I promise</h3>
+  </p>
+  
+  <p>
+    <div id="questionItem" style="display:none">
+    </div>
+    <div id="answerItem" style="display:none">
+    </div>
+  </p>
+
+  <p>
+    Input: <br />
+    <textarea id="userInput" rows="4" cols="78"></textarea>
+  </p>
+  
+  
+  
+  <p>
+    <button onclick="doCalc()">Receive Input</button>
+  </p>
+</div>
+<script>
+  console.log("Behold - a restart!");
+  
+  function doCalc() {
+    var userInput = document.getElementById("userInput").value;
+    
+    if (userInput) {
+      document.getElementById("questionItem").style.display = '';
+      document.getElementById("questionItem").innerHTML = '<strong>You asked:</strong> ' + userInput;
+      console.log("Enabling...");
+    } else {
+      document.getElementById("questionItem").style.display = 'none';
+      document.getElementById("questionItem").innerHTML = '';
+      console.log("Disabling...");
+    }
+    
+    document.getElementById("answerItem").style.display = 'none';
+    document.getElementById("answerItem").innerHTML = '';
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/calc');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    var data = {userInput: userInput};
+    xhr.send(JSON.stringify(data));
+    
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var answer = xhr.responseText;
+        
+        if (answer) {
+          document.getElementById("answerItem").style.display = '';
+          document.getElementById("answerItem").innerHTML = '<strong>We responded:</strong> ' + answer;
+        }
+      } else {
+        console.log('Error: ' + xhr.status); // An error occurred during the request.
+      }
+    };
+    
+  }
+</script>
+</body>
+</html>
